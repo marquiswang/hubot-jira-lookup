@@ -131,7 +131,10 @@ reportIssue = (robot, msg, issue) ->
 
     auth = 'Basic ' + new Buffer(user + ':' + pass).toString('base64')
 
-    robot.http("#{url}/rest/api/latest/issue/#{issue}")
+    options = {}
+    if process.env.HUBOT_JIRA_LOOKUP_ALLOW_UNAUTHORIZED
+        options['rejectUnauthorized'] = false;
+    robot.http("#{url}/rest/api/latest/issue/#{issue}", options)
       .headers(Authorization: auth, Accept: 'application/json')
       .get() (err, res, body) ->
         try
